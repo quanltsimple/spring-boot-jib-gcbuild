@@ -1,5 +1,5 @@
 # Deploy Java application to GCP Cloud Run with Maven, Jib & Cloud Build
-Use GitHub action -> Cloud Build -> Container Registry -> Cloud Run
+Use GitHub -> Cloud Build -> Container Registry -> Cloud Run
 
 Created by Quan Le Trong (https://github.com/quanltsimple)
 # Solution Description
@@ -25,7 +25,7 @@ This solution can be deployed for all account & region of Google Cloud Platform
 
 ## Deployment Instructions
 
-### Deployment prerequisites Locally (use for deploy from local machine)
+### Deployment prerequisites Locally (use for deploy from the local machine, If you don't need to use with Locally, please go to step "Setup automation trigger with Cloud Build & GitHub")
 - First you need to install Google Cloud SDK
 
 ```
@@ -67,7 +67,7 @@ gcloud builds submit
 
 ![](images/img-05.png)
 
-## Setup automation trigger from GitHub action (Not Locally)
+## Setup automation trigger with Cloud Build & GitHub
 
 - Access to Cloud Run console -> click Trigger -> click Create Trigger -> in option Source click "Connect New Repository" -> Select GitHub and click Continue to grant GitHub access to Cloud Build
 
@@ -90,3 +90,9 @@ gcloud builds submit
 ![](images/img-09.png)
 
 - Setup Trigger done
+
+- Now, Try changing something and commit to your branch, then go to the Cloud Build console. Wow, enjoy if all goes well
+
+![](images/img-11.png)
+
+- Now, whenever there is a change on your branch, Cloud Build will automatically build at that time
