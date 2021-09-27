@@ -65,6 +65,9 @@ gcloud builds submit
 ```
 
 ## Check result
+- Check your Container image in Container Registry console
+
+![](images/img-13.png)
 
 - Access to Cloud Run console -> Click your service -> Click to your service link
 
