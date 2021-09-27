@@ -25,14 +25,15 @@ This solution can be deployed for all account & region of Google Cloud Platform
 
 ## Deployment Instructions
 
-### Deployment prerequisites Locally (use for deploy from the local machine, If you don't need to use with Locally, please go to step "Setup automation trigger with Cloud Build & GitHub")
-- First you need to install Google Cloud SDK
+### Deployment prerequisites
+
+- First you need to install Google Cloud SDK (If you want to deploy from Locally)
 
 ```
 https://cloud.google.com/sdk/docs/install
 ```
 
-- Login to GCP with command
+- Login to GCP with command (If you want to deploy from Locally)
 ```
 gcloud login
 ```
@@ -56,14 +57,12 @@ gcloud login
 
 ![](images/img-12.png)
 
-## Deploy to GCP from Locally
+## Deploy to GCP from gcloud command Locally
 
 - Run the command below in your project folder
 ```
 gcloud builds submit
 ```
-
-- Checking console
 
 ## Check result
 
