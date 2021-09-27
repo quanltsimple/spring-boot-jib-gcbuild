@@ -1,0 +1,73 @@
+substitutions:
+  _IMAGE_NAME: quanltgcp # Your name image
+  _GCS_CACHE_BUCKET: cloud-build-maven-cache # Your bucket
+  _PROJECT_ID: study-gcp-project-323816 # Your project ID
+  _SERVICE_NAME: quanlt-hello-world-spring # Your Cloud Run service name 
+  _REGION: asia-southeast1 # Your region
+
+steps:
+
+# Load the cache from GCS if it exists
+  - name: gcr.io/cloud-builders/gsutil
+    dir: /root
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        (
+          gsutil cp gs://${_GCS_CACHE_BUCKET}/m2-cache.tar.gz /tmp/m2-cache.tar.gz &&
+          tar -xzf /tmp/m2-cache.tar.gz
+        ) || echo 'Cache not found'
+    volumes:
+      - name: m2
+        path: /root/.m2/
+
+# Build container image & push image to GCR Asia
+  - name: gcr.io/cloud-builders/mvn:3.5.0-jdk-8
+    id: build
+    args: ['clean', 'install', 'jib:build', '-Dimage=asia.gcr.io/${_PROJECT_ID}/${_IMAGE_NAME}']
+    volumes:
+      - name: m2
+        path: /root/.m2/
+
+# Cache the /root/.m2 folder and upload it to GCS bucket
+  - name: gcr.io/cloud-builders/gsutil
+    waitFor:
+      - build
+    dir: /root
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        tar -czf /tmp/m2-cache.tar.gz .m2 &&
+        gsutil cp /tmp/m2-cache.tar.gz gs://${_GCS_CACHE_BUCKET}/m2-cache.tar.gz
+    volumes:
+      - name: m2
+        path: /root/.m2/
+
+# Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [ 'run', 'deploy', '${_SERVICE_NAME}', '--image', 'asia.gcr.io/${_PROJECT_ID}/${_IMAGE_NAME}', '--region', '${_REGION}' ]
+
+# Deploy to GKE
+ # - name: 'gcr.io/cloud-builders/gke-deploy:stable'
+ #   waitFor:
+ #     - build
+ #   args:
+ #     - run
+ #     - --image=eu.gcr.io/${PROJECT_ID}/${_IMAGE_NAME}:latest
+ #     - --location=asia-southeast1
+ #     - --cluster=cloud-build-demo
+ #     - --expose=8088
+
+# Send notification to Slack or Custom for other Webhook
+ # - name: gcr.io/cloud-builders/curl
+ #   args:
+ #     - -X
+ #     - POST
+ #     - -H
+ #     - 'Content-type: application/json'
+ #     - --data
+ #     - '{"text":"New deployment done! --> http://xxxxx:8080/"}'
+ #     - https://hooks.slack.com/services/xxxxx
