@@ -52,6 +52,10 @@ gcloud login
 
 ![](images/img-04.png)
 
+- Modify config in pom.xml, fill your Java version & tag for container image
+
+![](images/img-12.png)
+
 ## Deploy to GCP from Locally
 
 - Run the command below in your project folder
